@@ -1,22 +1,21 @@
-databases:
-  - name: mysitedb
-    plan: free
-    databaseName: mysite
-    user: mysite
-
 services:
   - type: web
-    plan: free
-    name: mysite
+    name: jozvehyab-backend  # <-- نام سرویس را برای خوانایی تغییر دادیم
     runtime: python
-    buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn mysite.asgi:application -k uvicorn.workers.UvicornWorker"
+    plan: free
+    buildCommand: "pip install -r requirements.txt; python manage.py migrate"
+    startCommand: "gunicorn example.wsgi" # نام پروژه در این قالب example است
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: mysitedb
+          name: jozvehyab-db   # <-- مهم: به دیتابیس موجود اشاره می‌کند
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
-      - key: WEB_CONCURRENCY
-        value: 4
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ADMIN_USER_ID
+        sync: false
+
+# --- بخش دیتابیس به طور کامل حذف شد ---
+# ما به Render نمیگوییم دیتابیس جدید بسازد، فقط میگوییم به دیتابیس موجود وصل شود.
